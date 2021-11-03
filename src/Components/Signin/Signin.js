@@ -1,6 +1,40 @@
 import React from 'react';
 
-const Signin = ({onRouteChange}) => {
+class Signin extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      singInEmail: '',
+      singInPassword: ''
+    }
+  }
+
+  onEmailChange = (event) =>{
+    this.setState({singInEmail: event.target.value})
+  }
+  onPasswordChange = (event) =>{
+    this.setState({singInPassword: event.target.value})
+  }
+
+  onSubmitSignIn = () => {
+    fetch('http://localhost:3000/signin', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: this.state.singInEmail,
+        password: this.state.singInPassword
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data === 'success'){
+        this.props.onRouteChange('home');
+      }
+    })
+  }
+
+  render(){
+    const {onRouteChange} = this.props;
     return (
         <article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
         <main className="pa4 black-80">
@@ -9,15 +43,15 @@ const Signin = ({onRouteChange}) => {
                <legend className="f1 fw6 ph0 mh0">Sign In</legend>
                 <div className="mt3">
                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-        <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address"  id="email-address" />
+        <input onChange={this.onEmailChange} className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address"  id="email-address" />
       </div>
       <div className="mv3">
         <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-        <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password"  id="password" />
+        <input onChange={this.onPasswordChange} className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password"  id="password" />
       </div>
     </fieldset>
     <div className="">
-      <input onClick={() => onRouteChange('home')} className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in" />
+      <input onClick={this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in" />
     </div>
     <div className="lh-copy mt3">
       <p onClick={() => onRouteChange('register')} href="#0" className="f6 link dim black db pointer">Register</p>
@@ -25,7 +59,7 @@ const Signin = ({onRouteChange}) => {
     </form>
     </main>
 </article>
-    );
+    );}
 }
 
 export default Signin;
